@@ -86,7 +86,7 @@ public class PowerUpController: MonoBehaviour
     {
         Vector3 randomPosition;
 
-        int maxAttempts = 10; // Maximum number of attempts to find a suitable position
+        int maxAttempts = 10; 
 
         for (int i = 0; i < maxAttempts; i++)
         {
@@ -119,11 +119,11 @@ public class PowerUpController: MonoBehaviour
         {
             if (Vector3.Distance(position, wall.transform.position) < minDistanceToWall)
             {
-                return true; // Too close to a wall
+                return true; 
             }
         }
 
-        return false; // Not too close to any wall
+        return false; 
     }
 
     void ScaleDownGameObjectsWithTag(string tag)

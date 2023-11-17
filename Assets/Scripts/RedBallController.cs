@@ -12,7 +12,6 @@ public class RedBallController : BallController
         }
         else if (collision.gameObject.CompareTag("Walls") || collision.gameObject.CompareTag("BolaForteVermelha") || collision.gameObject.CompareTag("BolaVerde"))
         {
-            // Bounce off like walls
             direction = Vector2.Reflect(direction, collision.contacts[0].normal);
         }
     }
