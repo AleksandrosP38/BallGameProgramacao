@@ -110,4 +110,6 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(delayBeforeGameOver);
         SceneManager.LoadScene("GameOver");
     }
+
+    
 }

@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerUpController : MonoBehaviour
+public class PowerUpController: MonoBehaviour
 {
     [SerializeField] private float powerUpDuration = 10f;
     [SerializeField] private float scalingFactor = 0.5f;
     [SerializeField] private float respawnDelay = 5f;
+    [SerializeField] private float minDistanceToWall = 1.0f;
 
     private bool isActivated = false;
     private SpriteRenderer powerUpSpriteRenderer;
     private BoxCollider2D powerUpCollider;
 
     private Dictionary<GameObject, Vector3> originalScales = new Dictionary<GameObject, Vector3>();
+
+    private Vector3 initialPosition;
 
     private void Start()
     {
@@ -21,6 +24,8 @@ public class PowerUpController : MonoBehaviour
 
         powerUpSpriteRenderer.enabled = false;
         powerUpCollider.enabled = false;
+
+        initialPosition = transform.position;
 
         StartCoroutine(StartPowerUp());
     }
@@ -79,13 +84,46 @@ public class PowerUpController : MonoBehaviour
 
     void RespawnPowerUp()
     {
-        Vector3 randomPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), 0f);
-        transform.position = randomPosition;
+        Vector3 randomPosition;
 
-        powerUpSpriteRenderer.enabled = true;
-        powerUpCollider.enabled = true;
+        int maxAttempts = 10; // Maximum number of attempts to find a suitable position
 
-        StartCoroutine(SpawnDelay());
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            randomPosition = new Vector3(
+                Random.Range(initialPosition.x - 5f, initialPosition.x + 5f),
+                Random.Range(initialPosition.y - 5f, initialPosition.y + 5f),
+                0f
+            );
+
+            if (!IsTooCloseToWall(randomPosition))
+            {
+                transform.position = randomPosition;
+
+                powerUpSpriteRenderer.enabled = true;
+                powerUpCollider.enabled = true;
+
+                StartCoroutine(SpawnDelay());
+                return;
+            }
+        }
+
+        Debug.LogWarning("Couldn't find a suitable respawn position after multiple attempts.");
+    }
+
+    bool IsTooCloseToWall(Vector3 position)
+    {
+        GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
+
+        foreach (GameObject wall in walls)
+        {
+            if (Vector3.Distance(position, wall.transform.position) < minDistanceToWall)
+            {
+                return true; // Too close to a wall
+            }
+        }
+
+        return false; // Not too close to any wall
     }
 
     void ScaleDownGameObjectsWithTag(string tag)
