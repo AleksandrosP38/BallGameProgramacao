@@ -36,7 +36,13 @@ public class BolaVerde : MonoBehaviour
 
     private void HandlePlayerCollision()
     {
-        Vector2 newPosition = new Vector2(Random.Range(-10f, 10f), Random.Range(-4f, 4f));
+        Vector2 newPosition;
+
+        do
+        {
+            newPosition = new Vector2(Random.Range(-7f, 7f), Random.Range(-3f, 3f));
+        } while (!IsInCameraBounds(newPosition));
+
         transform.position = newPosition;
 
         Camera.main.backgroundColor = Random.ColorHSV();
@@ -44,6 +50,18 @@ public class BolaVerde : MonoBehaviour
         ScoreManager.Instance.IncreasePoints();
         SpawnObject();
     }
+
+    private bool IsInCameraBounds(Vector2 position)
+    {
+        Camera mainCamera = Camera.main;
+
+        float halfWidth = mainCamera.orthographicSize * mainCamera.aspect;
+        float halfHeight = mainCamera.orthographicSize;
+
+        return (position.x > -halfWidth && position.x < halfWidth &&
+                position.y > -halfHeight && position.y < halfHeight);
+    }
+
 
     private void SpawnObject()
     {
