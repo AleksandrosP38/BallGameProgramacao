@@ -113,7 +113,7 @@ public class PowerUpController: MonoBehaviour
 
     bool IsTooCloseToWall(Vector3 position)
     {
-        GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
+        GameObject[] walls = GameObject.FindGameObjectsWithTag("Walls");
 
         foreach (GameObject wall in walls)
         {
